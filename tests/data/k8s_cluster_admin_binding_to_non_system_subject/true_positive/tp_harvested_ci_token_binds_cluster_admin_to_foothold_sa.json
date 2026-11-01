@@ -2,7 +2,7 @@
   "_meta": {
     "synthetic": true,
     "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
-    "description": "Lab incident step: stolen 'lab-web-frontend' service account token creates 'lab-backdoor-admin' binding cluster-admin to the same service account."
+    "description": "Lab incident step: harvested legacy 'lab-ci-deployer' token creates 'lab-backdoor-admin', binding cluster-admin to the attacker's original foothold, the 'lab-web-frontend' service account."
   },
   "event": {
     "kind": "Event",
@@ -13,10 +13,10 @@
     "requestURI": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings",
     "verb": "create",
     "user": {
-      "username": "system:serviceaccount:lab-apps:lab-web-frontend",
+      "username": "system:serviceaccount:lab-ci:lab-ci-deployer",
       "groups": [
         "system:serviceaccounts",
-        "system:serviceaccounts:lab-apps",
+        "system:serviceaccounts:lab-ci",
         "system:authenticated"
       ]
     },

@@ -2,7 +2,7 @@
   "_meta": {
     "synthetic": true,
     "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
-    "description": "Exec into a kube-system pod denied by RBAC (403)."
+    "description": "Lab incident step: early exec attempt into kube-proxy with the stolen lab-web-frontend token, denied by RBAC (403)."
   },
   "event": {
     "kind": "Event",

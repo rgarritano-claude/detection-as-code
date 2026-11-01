@@ -2,7 +2,7 @@
   "_meta": {
     "synthetic": true,
     "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
-    "description": "Attempt to bind cluster-admin denied by RBAC (403) before the token gained escalate/bind rights."
+    "description": "Lab incident step: first attempt to bind cluster-admin with the stolen lab-web-frontend token, denied by RBAC (403)."
   },
   "event": {
     "kind": "Event",

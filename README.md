@@ -8,7 +8,7 @@ end to end in a lab-simulation incident write-up. Detections and playbooks are
 gated by automated tests in CI, the same way application code is built, reviewed,
 and shipped.
 
-**At a glance:** 5 detections (AWS CloudTrail, Kubernetes audit) · 1 SOAR playbook · 1 incident write-up, all validated in CI.
+**At a glance:** 5 detections (AWS CloudTrail, Kubernetes audit) · 1 SOAR playbook · 1 incident write-up. Detections and the playbook are tested in CI.
 
 Each detection in this repo ships with:
 

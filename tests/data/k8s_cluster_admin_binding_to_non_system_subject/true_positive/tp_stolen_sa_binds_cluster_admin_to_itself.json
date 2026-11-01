@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Lab incident step: stolen 'lab-web-frontend' service account token creates 'lab-backdoor-admin' binding cluster-admin to the same service account."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "RequestResponse",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000001",
+    "stage": "ResponseComplete",
+    "requestURI": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings",
+    "verb": "create",
+    "user": {
+      "username": "system:serviceaccount:lab-apps:lab-web-frontend",
+      "groups": [
+        "system:serviceaccounts",
+        "system:serviceaccounts:lab-apps",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "203.0.113.66"
+    ],
+    "userAgent": "curl/8.5.0",
+    "objectRef": {
+      "resource": "clusterrolebindings",
+      "apiVersion": "v1",
+      "apiGroup": "rbac.authorization.k8s.io"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 201
+    },
+    "requestReceivedTimestamp": "2026-10-14T02:19:42.118204Z",
+    "stageTimestamp": "2026-10-14T02:19:42.118204Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    },
+    "requestObject": {
+      "kind": "ClusterRoleBinding",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": {
+        "name": "lab-backdoor-admin"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "cluster-admin"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "lab-web-frontend",
+          "namespace": "lab-apps"
+        }
+      ]
+    }
+  }
+}

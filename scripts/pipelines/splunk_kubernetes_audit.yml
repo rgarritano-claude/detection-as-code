@@ -1,0 +1,35 @@
+# pySigma processing pipeline: Kubernetes API server audit logs in Splunk.
+#
+# 1. Scope rules with logsource product=kubernetes, service=audit to the audit
+#    sourcetype. `kube:apiserver:audit` is this repo's convention; set it to the
+#    sourcetype your collector assigns (e.g. an OpenTelemetry or HEC input).
+# 2. Map array-crossing field paths to Splunk's JSON multivalue notation
+#    (`list{}.field`). Sigma rules keep plain dotted names matching the audit
+#    Event JSON (audit.k8s.io/v1), so rules stay backend-neutral.
+name: Splunk Kubernetes API server audit
+priority: 20
+transformations:
+  - id: k8s_audit_field_mapping
+    type: field_name_mapping
+    mapping:
+      requestObject.subjects.kind: requestObject.subjects{}.kind
+      requestObject.subjects.name: requestObject.subjects{}.name
+      requestObject.subjects.namespace: requestObject.subjects{}.namespace
+      requestObject.spec.containers.securityContext.privileged: requestObject.spec.containers{}.securityContext.privileged
+      requestObject.spec.initContainers.securityContext.privileged: requestObject.spec.initContainers{}.securityContext.privileged
+      requestObject.spec.containers.image: requestObject.spec.containers{}.image
+      requestObject.spec.volumes.hostPath.path: requestObject.spec.volumes{}.hostPath.path
+      user.groups: user.groups{}
+      sourceIPs: sourceIPs{}
+    rule_conditions:
+      - type: logsource
+        product: kubernetes
+        service: audit
+  - id: k8s_audit_sourcetype
+    type: add_condition
+    conditions:
+      sourcetype: kube:apiserver:audit
+    rule_conditions:
+      - type: logsource
+        product: kubernetes
+        service: audit

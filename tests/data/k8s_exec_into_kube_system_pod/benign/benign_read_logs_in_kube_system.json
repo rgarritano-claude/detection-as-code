@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Reading CoreDNS logs (pods/log subresource) in kube-system, not exec."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "Metadata",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000017",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/kube-system/pods/coredns-lab-5d78c/log?container=coredns",
+    "verb": "get",
+    "user": {
+      "username": "lab-platform-admin",
+      "groups": [
+        "lab-platform-team",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "192.0.2.15"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "kube-system",
+      "name": "coredns-lab-5d78c",
+      "subresource": "log"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 200
+    },
+    "requestReceivedTimestamp": "2026-10-17T11:00:00.000000Z",
+    "stageTimestamp": "2026-10-17T11:00:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    }
+  }
+}

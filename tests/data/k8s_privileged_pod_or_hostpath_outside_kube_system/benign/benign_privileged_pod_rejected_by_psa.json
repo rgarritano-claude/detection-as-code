@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Privileged pod rejected by Pod Security Admission (403) in a namespace enforcing 'restricted'."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "RequestResponse",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000012",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/lab-apps/pods",
+    "verb": "create",
+    "user": {
+      "username": "lab-platform-admin",
+      "groups": [
+        "lab-platform-team",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "192.0.2.15"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "lab-apps"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 403,
+      "status": "Failure",
+      "reason": "Forbidden"
+    },
+    "requestReceivedTimestamp": "2026-10-20T09:00:00.000000Z",
+    "stageTimestamp": "2026-10-20T09:00:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "forbid",
+      "authorization.k8s.io/reason": ""
+    },
+    "requestObject": {
+      "kind": "Pod",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "lab-metrics-agent",
+        "namespace": "lab-apps"
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "agent",
+            "image": "registry.example.net/lab/metrics-agent:1.0",
+            "securityContext": {
+              "privileged": true
+            },
+            "volumeMounts": [
+              {
+                "name": "host-root",
+                "mountPath": "/host"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "host-root",
+            "hostPath": {
+              "path": "/",
+              "type": "Directory"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -25,10 +25,19 @@ and hiring managers, so keep content professional, accurate, and readable.
    - `falsepositives`, `level`, `references` (ATT&CK + vendor docs) are required
    - Prefer explicit `selection and not filter_a and not filter_b` when a filter
      uses `|fieldref`; the Splunk backend can't OR fieldref comparisons
+   - Use plain dotted field names that match the raw event JSON, even across
+     arrays (`requestObject.subjects.name`). Backend-specific names (Splunk's
+     `subjects{}.name`) go in the log source's pipeline `field_name_mapping`.
+   - Every log source needs a pipeline in `scripts/pipelines/` that adds a
+     `sourcetype` condition (tests enforce this). Existing pipelines:
+     `aws/cloudtrail` → `aws:cloudtrail`, `kubernetes/audit` → `kube:apiserver:audit`.
+   - Kubernetes audit rules: state the audit-policy level the rule needs
+     (`Request`/`RequestResponse` for `requestObject` fields) in `description`.
 2. SPL: `make convert` writes `detections/splunk/<same path>.spl`. Commit it.
 3. Samples: `tests/data/<rule file stem>/true_positive/*.json` and `benign/*.json`.
    Each file is `{"_meta": {"synthetic": true, "note": "...", "description": "..."}, "event": {...}}`.
    At least one TP and one benign. Benign samples should cover each filter branch.
+   Samples reused by an incident write-up say "Lab incident step:" in `description`.
 4. `make all` must pass. Tests are generic and pick up new rules automatically;
    add evaluator support in `scripts/sigma_eval.py` (with a unit test) if a rule
    uses a modifier it doesn't handle, rather than skipping the test.
@@ -63,6 +72,19 @@ and hiring managers, so keep content professional, accurate, and readable.
    `tests/test_soar_playbooks.py` applies structure gates to every playbook
    automatically.
 
+## Incident write-ups
+
+- Path: `docs/incidents/<year>-lab-<platform>-<short-name>.md`, plus a row in
+  `docs/incidents/README.md` and the root README.
+- Start with a prominent **LAB SIMULATION** callout. No real organizations,
+  employers, clients, or metrics; timelines are synthetic and say so.
+- Sections: summary, Mermaid attack flow, synthetic UTC timeline, how each repo
+  detection fired (link the committed sample events), triage, containment,
+  eradication, recovery, lessons learned / hardening, ATT&CK mapping table.
+- Be explicit about what was **not** detected, and list those as detection gaps.
+- Describe validation honestly: the samples are checked by pytest; don't claim
+  SPL ran in a live Splunk unless it did.
+
 ## Tooling
 
 - Python 3.11, versions pinned in `requirements.txt`. Upgrade deliberately and
@@ -70,6 +92,9 @@ and hiring managers, so keep content professional, accurate, and readable.
 - `make lint` / `make convert` / `make convert-check` / `make test` / `make all`.
 - CI (`.github/workflows/ci.yml`) runs lint, convert-check, and pytest (detections
   and SOAR playbooks) on push and PR. New tests under `tests/` run automatically.
+- GitHub Actions stay on current major versions that run on Node 24
+  (`actions/checkout@v7`, `actions/setup-python@v7`). Check release notes for
+  breaking changes before bumping a major.
 - Log-source specifics (sourcetypes, field mappings) live in
   `scripts/pipelines/*.yml`, not in rules.
 

@@ -1,14 +1,16 @@
 # SOAR Playbooks
 
-> **Status: placeholder (Phase 2).**
+Splunk SOAR playbooks, each in `soar/playbooks/<name>/` with the playbook
+(`<name>.py`) and a README that has a Mermaid flow diagram and import steps.
 
-This directory will hold Splunk SOAR playbooks that respond to the detections in
-[`detections/`](../../detections). The first planned playbook is a response to
-`AWS IAM Access Key Created for a Different User`:
+| Playbook | Trigger | Outcomes |
+|---|---|---|
+| [phishing_triage](phishing_triage/) | User-reported email container | Malicious: quarantine, block sender, ticket · Suspicious: analyst review · Clean: auto-close |
 
-1. Enrich: look up the caller and target IAM users, attached policies, and key age.
-2. Contain (approval-gated): deactivate the newly created access key.
-3. Notify: open a case with the CloudTrail evidence and the analyst decision.
+**Planned:** a response playbook for the IAM access-key detections in
+[`detections/`](../../detections). It would enrich caller and target, then deactivate
+the new key after approval, then write case notes.
 
-All playbook content in this repo is built and exercised against **lab
-simulations only**, not production environments or real incidents.
+All playbooks are built and tested offline against **lab simulations** using the
+`phantom` mock in [`tests/mocks/`](../../tests/mocks). They do not describe
+production deployments or real incidents.

@@ -1,5 +1,8 @@
 title: AWS IAM Access Key Created for a Different User
 id: 43b4e28d-8295-4d85-922d-1def0a78ac82
+related:
+  - id: b420c517-9ca9-4f04-86e1-5136a63d75b4
+    type: similar
 status: experimental
 description: |
   Detects an IAM user calling iam:CreateAccessKey for a *different* IAM user.
@@ -14,8 +17,9 @@ description: |
   calls (errorCode present) are excluded.
 
   Scope note: restricted to userIdentity.type=IAMUser because assumed-role and
-  federated callers carry no userIdentity.userName to compare against. Key
-  creation by roles is a separate detection on the roadmap.
+  federated callers carry no userIdentity.userName to compare against. Those
+  callers are covered by the companion rule "AWS IAM Access Key Created by an
+  Assumed-Role or Federated Caller".
 references:
   - https://attack.mitre.org/techniques/T1098/001/
   - https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html

@@ -22,17 +22,23 @@ Each detection in this repo ships with:
 | Detection | Platform | ATT&CK | Level | Sigma | SPL |
 |---|---|---|---|---|---|
 | AWS IAM access key created for a different user | AWS CloudTrail | [T1098.001](https://attack.mitre.org/techniques/T1098/001/) Additional Cloud Credentials | Medium | [rule](detections/sigma/aws/cloudtrail/aws_iam_create_access_key_for_other_user.yml) | [spl](detections/splunk/aws/cloudtrail/aws_iam_create_access_key_for_other_user.spl) |
+| AWS IAM access key created by an assumed-role or federated caller | AWS CloudTrail | [T1098.001](https://attack.mitre.org/techniques/T1098/001/) Additional Cloud Credentials | Medium | [rule](detections/sigma/aws/cloudtrail/aws_iam_create_access_key_by_role_or_federated_caller.yml) | [spl](detections/splunk/aws/cloudtrail/aws_iam_create_access_key_by_role_or_federated_caller.spl) |
 
-### Spotlight: access key created for another IAM user
+### Spotlight: IAM access-key persistence (T1098.001)
 
-An identity with `iam:CreateAccessKey` on other users can mint long-lived
-credentials for a more privileged account. Those keys survive a password reset
-and session revocation of the original foothold, which makes this a well-known
-persistence and privilege-escalation path.
+An identity that can call `iam:CreateAccessKey` on other users can mint
+long-lived credentials for a more privileged account. Those keys survive a
+password reset or session revocation of the original foothold, which makes this
+a well-known persistence and privilege-escalation path. Two companion rules
+split coverage by caller type:
 
-The rule flags successful `CreateAccessKey` calls where the target
-`requestParameters.userName` differs from the calling IAM user. Self-service key
-creation and denied attempts are excluded. Generated SPL:
+| Caller (`userIdentity.type`) | Rule | Logic |
+|---|---|---|
+| `IAMUser` | Access key created for a different user | Target `requestParameters.userName` differs from the caller's `userIdentity.userName` |
+| `AssumedRole`, `FederatedUser` | Access key created by an assumed-role or federated caller | Any successful key creation (roles and federated sessions can't own access keys, so every key goes to an IAM user) |
+
+Both rules exclude failed calls (`errorCode` present). Generated SPL for the
+IAM-user rule:
 
 ```spl
 sourcetype="aws:cloudtrail" eventSource="iam.amazonaws.com" eventName="CreateAccessKey" userIdentity.type="IAMUser" requestParameters.userName=* NOT errorCode=*
@@ -40,9 +46,10 @@ sourcetype="aws:cloudtrail" eventSource="iam.amazonaws.com" eventName="CreateAcc
 | table eventTime,userIdentity.arn,userIdentity.userName,requestParameters.userName,responseElements.accessKey.accessKeyId,sourceIPAddress,userAgent,recipientAccountId
 ```
 
-**Known gap:** callers using assumed roles or federation have no
-`userIdentity.userName` to compare against, so this rule scopes to IAM-user
-callers. A companion rule for role-initiated key creation is on the roadmap.
+**Remaining scope note:** callers using the root user (`userIdentity.type=Root`)
+are not covered by either rule. Root activity belongs in a dedicated root-usage
+detection, which isn't in this repo yet. Expect tuning for infrastructure-as-code
+and identity-automation roles, which are listed in each rule's `falsepositives`.
 
 ## Repository structure
 

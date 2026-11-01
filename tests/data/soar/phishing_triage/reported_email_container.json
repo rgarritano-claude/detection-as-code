@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic SOAR container; no real mailbox, user, or incident.",
+    "description": "User-reported phishing email as created by SOAR email ingestion: one email artifact, one URL, one attachment."
+  },
+  "container": {
+    "id": 1001,
+    "name": "Reported phishing: Action required - payroll update",
+    "label": "phishing",
+    "severity": "medium",
+    "status": "new",
+    "artifacts": [
+      {
+        "id": 1,
+        "name": "Email Artifact",
+        "label": "email",
+        "cef": {
+          "fromEmail": "it-support@lab-payroll-update.example.net",
+          "toEmail": "lab-user@example.com",
+          "emailHeaders": {
+            "Message-ID": "<lab-sim-0001@lab-payroll-update.example.net>",
+            "Subject": "Action required - payroll update",
+            "From": "IT Support <it-support@lab-payroll-update.example.net>",
+            "To": "lab-user@example.com"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "name": "URL Artifact",
+        "label": "url",
+        "cef": {
+          "requestURL": "https://lab-payroll-update.example.net/login?user=lab-user"
+        }
+      },
+      {
+        "id": 3,
+        "name": "URL Artifact",
+        "label": "url",
+        "cef": {
+          "requestURL": "https://lab-payroll-update.example.net/login?user=lab-user"
+        }
+      },
+      {
+        "id": 4,
+        "name": "Vault Artifact",
+        "label": "vault",
+        "cef": {
+          "fileName": "payroll_update.html",
+          "fileHashSha256": "08C1C84B883546086688284655653CAE443D90F704A0AA24ACD435087305FF1C",
+          "vaultId": "lab0000000000000000000000000000000000000"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Lab incident step: lab-web-frontend service account, now cluster-admin, execs into a kube-proxy pod (SPDY, verb=create) to read node credentials."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "Metadata",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000013",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/kube-system/pods/kube-proxy-lab01/exec?command=sh&container=kube-proxy&stdin=true&stdout=true&tty=true",
+    "verb": "create",
+    "user": {
+      "username": "system:serviceaccount:lab-apps:lab-web-frontend",
+      "groups": [
+        "system:serviceaccounts",
+        "system:serviceaccounts:lab-apps",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "203.0.113.66"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "kube-system",
+      "name": "kube-proxy-lab01",
+      "subresource": "exec"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 101
+    },
+    "requestReceivedTimestamp": "2026-10-14T02:31:15.902114Z",
+    "stageTimestamp": "2026-10-14T02:31:15.902114Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    }
+  }
+}

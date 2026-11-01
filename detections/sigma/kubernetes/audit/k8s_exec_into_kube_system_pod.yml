@@ -1,0 +1,53 @@
+title: Kubernetes Exec Into a Pod in kube-system
+id: 682b9807-f664-460f-a8f2-95ce5bc6733d
+status: experimental
+description: |
+  Detects an exec session (e.g. `kubectl exec`) into a pod in the kube-system
+  namespace. kube-system pods run control-plane and node components with
+  powerful service accounts and host access; interactive access to them is rare
+  in normal operations and is a strong signal of hands-on-keyboard activity,
+  credential harvesting, or attempts to reach the node.
+
+  Logic: requests to the pods/exec subresource in kube-system. Both verbs are
+  matched: "create" (SPDY streaming) and "get" (WebSocket streaming, used by
+  newer kubectl versions). Requests denied by authorization (401/403) are
+  excluded.
+
+  Gaps: pods/attach and ephemeral debug containers (kubectl debug) are not
+  covered; exec into other privileged namespaces needs its own allowlist.
+references:
+  - https://attack.mitre.org/techniques/T1609/
+  - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
+  - https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/
+author: Robert Garritano
+date: 2026-11-01
+tags:
+  - attack.execution
+  - attack.t1609
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - get
+    objectRef.resource: pods
+    objectRef.subresource: exec
+    objectRef.namespace: kube-system
+  filter_main_denied:
+    responseStatus.code:
+      - 401
+      - 403
+  condition: selection and not filter_main_denied
+fields:
+  - requestReceivedTimestamp
+  - user.username
+  - user.groups
+  - sourceIPs
+  - userAgent
+  - objectRef.name
+  - requestURI
+falsepositives:
+  - Platform engineers troubleshooting CoreDNS, kube-proxy, or CNI pods (correlate with a change or incident ticket)
+level: medium

@@ -1,0 +1,68 @@
+title: Kubernetes Privileged Pod or hostPath Mount Created Outside kube-system
+id: d20f931e-7f03-46df-b145-69bfb17a23e2
+status: experimental
+description: |
+  Detects successful creation of a pod outside the kube-system namespace that
+  runs a privileged container (or init container) or mounts a hostPath volume.
+  Privileged containers and hostPath mounts give a workload direct access to the
+  node, which is a common path to container escape, credential theft from the
+  node, and running unmanaged software such as cryptominers on cluster hardware.
+
+  Logic: verb create on pods with response code 201, where any container or
+  init container sets securityContext.privileged=true, or any volume defines
+  hostPath. Pods in kube-system (CNI, CSI, and node agents) are excluded.
+
+  Requirements and gaps:
+  - The audit policy must log pod creates at Request or RequestResponse level.
+  - Pods created by controllers (Deployments, DaemonSets) are still caught,
+    because the controller's pod create is audited; the actor is then the
+    controller's service account.
+  - Ephemeral (debug) containers, hostPID/hostNetwork, and dangerous
+    capabilities (e.g. SYS_ADMIN) are not covered by this rule.
+  - Pod Security Admission at "restricted" or "baseline" blocks these pods; a
+    201 here means admission allowed it.
+references:
+  - https://attack.mitre.org/techniques/T1610/
+  - https://attack.mitre.org/techniques/T1611/
+  - https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  - https://kubernetes.io/docs/concepts/storage/volumes/#hostpath
+author: Robert Garritano
+date: 2026-11-01
+tags:
+  - attack.execution
+  - attack.privilege-escalation
+  - attack.t1610
+  - attack.t1611
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection_create:
+    verb: create
+    objectRef.resource: pods
+    responseStatus.code: 201
+  selection_privileged_container:
+    requestObject.spec.containers.securityContext.privileged: true
+  selection_privileged_init_container:
+    requestObject.spec.initContainers.securityContext.privileged: true
+  selection_hostpath:
+    requestObject.spec.volumes.hostPath.path|exists: true
+  filter_main_kube_system:
+    objectRef.namespace: kube-system
+  condition: >-
+    selection_create and
+    (selection_privileged_container or selection_privileged_init_container or selection_hostpath)
+    and not filter_main_kube_system
+fields:
+  - requestReceivedTimestamp
+  - user.username
+  - sourceIPs
+  - objectRef.namespace
+  - objectRef.name
+  - requestObject.spec.containers.image
+  - requestObject.spec.volumes.hostPath.path
+falsepositives:
+  - Node agents (monitoring, logging, security) deployed to a dedicated namespace other than kube-system
+  - Storage or networking add-ons installed outside kube-system
+  - Short-lived node debugging pods created by administrators
+level: high

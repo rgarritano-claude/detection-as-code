@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic event; no real account, user, or incident.",
+    "description": "Role session attempts to create a key for 'lab-admin-ops' and is denied (errorCode=AccessDenied)."
+  },
+  "event": {
+    "eventVersion": "1.09",
+    "userIdentity": {
+      "type": "AssumedRole",
+      "principalId": "AROAEXAMPLEROLEID0001:lab-analyst-session",
+      "arn": "arn:aws:sts::123456789012:assumed-role/lab-readonly-role/lab-analyst-session",
+      "accountId": "123456789012",
+      "accessKeyId": "ASIAEXAMPLESESSION01",
+      "sessionContext": {
+        "sessionIssuer": {
+          "type": "Role",
+          "principalId": "AROAEXAMPLEROLEID0001",
+          "arn": "arn:aws:iam::123456789012:role/lab-readonly-role",
+          "accountId": "123456789012",
+          "userName": "lab-readonly-role"
+        },
+        "webIdFederationData": {},
+        "attributes": {
+          "creationDate": "2026-10-30T13:00:00Z",
+          "mfaAuthenticated": "false"
+        }
+      }
+    },
+    "eventTime": "2026-10-30T13:05:09Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "203.0.113.45",
+    "userAgent": "aws-cli/2.17.0 Python/3.11.9 Linux/6.1",
+    "requestParameters": {
+      "userName": "lab-admin-ops"
+    },
+    "responseElements": null,
+    "requestID": "7c2e9d1a-3b4c-4d5e-8f60-000000000003",
+    "eventID": "d3f0d8e5-0000-4000-8000-000000000003",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management",
+    "errorCode": "AccessDenied",
+    "errorMessage": "User: arn:aws:sts::123456789012:assumed-role/lab-readonly-role/lab-analyst-session is not authorized to perform: iam:CreateAccessKey on resource: user lab-admin-ops"
+  }
+}

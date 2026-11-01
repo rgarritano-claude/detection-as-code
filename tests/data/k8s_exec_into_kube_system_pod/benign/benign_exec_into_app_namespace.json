@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Developer execs into their own application pod in lab-apps (outside kube-system)."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "Metadata",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000015",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/lab-apps/pods/lab-web-frontend-7d9f8-abcde/exec?command=sh&container=web&stdin=true&stdout=true&tty=true",
+    "verb": "create",
+    "user": {
+      "username": "lab-dev-jsmith",
+      "groups": [
+        "lab-developers",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "198.51.100.77"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "lab-apps",
+      "name": "lab-web-frontend-7d9f8-abcde",
+      "subresource": "exec"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 101
+    },
+    "requestReceivedTimestamp": "2026-10-17T10:00:00.000000Z",
+    "stageTimestamp": "2026-10-17T10:00:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    }
+  }
+}

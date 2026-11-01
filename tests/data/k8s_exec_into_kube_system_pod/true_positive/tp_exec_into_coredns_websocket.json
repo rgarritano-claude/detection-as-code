@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Exec into a CoreDNS pod via WebSocket streaming (newer kubectl, verb=get)."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "Metadata",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000014",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/kube-system/pods/coredns-lab-5d78c/exec?command=sh&container=coredns&stdin=true&stdout=true&tty=true",
+    "verb": "get",
+    "user": {
+      "username": "lab-contractor",
+      "groups": [
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "198.51.100.40"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "kube-system",
+      "name": "coredns-lab-5d78c",
+      "subresource": "exec"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 101
+    },
+    "requestReceivedTimestamp": "2026-10-17T08:45:00.000000Z",
+    "stageTimestamp": "2026-10-17T08:45:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic event; no real account, user, or incident.",
+    "description": "Lab CI user 'lab-ci-deployer' (simulated leaked pipeline credential) creates a key for service user 'lab-svc-backup'."
+  },
+  "event": {
+    "eventVersion": "1.09",
+    "userIdentity": {
+      "type": "IAMUser",
+      "principalId": "AIDAEXAMPLEPRINCIPAL02",
+      "arn": "arn:aws:iam::123456789012:user/lab-ci-deployer",
+      "accountId": "123456789012",
+      "accessKeyId": "AKIAEXAMPLECALLER002",
+      "userName": "lab-ci-deployer"
+    },
+    "eventTime": "2026-10-29T23:47:30Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "192.0.2.200",
+    "userAgent": "aws-cli/2.17.0 Python/3.11.9 Darwin/23.6.0 exe/x86_64",
+    "requestParameters": {
+      "userName": "lab-svc-backup"
+    },
+    "responseElements": {
+      "accessKey": {
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "status": "Active",
+        "userName": "lab-svc-backup",
+        "createDate": "Oct 29, 2026, 11:47:30 PM"
+      }
+    },
+    "requestID": "4b1f8c2e-1a2b-4c3d-9e8f-000000000005",
+    "eventID": "a5e0c7d4-0000-4000-8000-000000000005",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management"
+  }
+}

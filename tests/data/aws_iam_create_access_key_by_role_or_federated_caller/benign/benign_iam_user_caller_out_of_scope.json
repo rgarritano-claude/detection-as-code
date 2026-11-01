@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic event; no real account, user, or incident.",
+    "description": "IAM-user caller creating a key for another user: out of scope for this rule (covered by the companion IAM-user rule)."
+  },
+  "event": {
+    "eventVersion": "1.09",
+    "userIdentity": {
+      "type": "IAMUser",
+      "principalId": "AIDAEXAMPLEPRINCIPAL01",
+      "arn": "arn:aws:iam::123456789012:user/lab-dev-jsmith",
+      "accountId": "123456789012",
+      "accessKeyId": "AKIAEXAMPLECALLER001",
+      "userName": "lab-dev-jsmith"
+    },
+    "eventTime": "2026-10-30T15:12:00Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "198.51.100.77",
+    "userAgent": "Boto3/1.35.0 Python/3.11.9 Linux/6.1",
+    "requestParameters": {
+      "userName": "lab-admin-ops"
+    },
+    "responseElements": {
+      "accessKey": {
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "status": "Active",
+        "userName": "lab-admin-ops",
+        "createDate": "2026-10-30T15:12:00Z"
+      }
+    },
+    "requestID": "7c2e9d1a-3b4c-4d5e-8f60-000000000005",
+    "eventID": "d5f0d8e5-0000-4000-8000-000000000005",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management"
+  }
+}

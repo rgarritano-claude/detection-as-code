@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Binding the read-only 'view' ClusterRole to a lab user (not cluster-admin)."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "RequestResponse",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000005",
+    "stage": "ResponseComplete",
+    "requestURI": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings",
+    "verb": "create",
+    "user": {
+      "username": "lab-platform-admin",
+      "groups": [
+        "lab-platform-team",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "192.0.2.15"
+    ],
+    "userAgent": "kubectl/v1.31.0 (linux/amd64) kubernetes/lab",
+    "objectRef": {
+      "resource": "clusterrolebindings",
+      "apiVersion": "v1",
+      "apiGroup": "rbac.authorization.k8s.io"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 201
+    },
+    "requestReceivedTimestamp": "2026-10-03T09:12:00.000000Z",
+    "stageTimestamp": "2026-10-03T09:12:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    },
+    "requestObject": {
+      "kind": "ClusterRoleBinding",
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": {
+        "name": "lab-analyst-view"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "view"
+      },
+      "subjects": [
+        {
+          "kind": "User",
+          "apiGroup": "rbac.authorization.k8s.io",
+          "name": "lab-analyst"
+        }
+      ]
+    }
+  }
+}

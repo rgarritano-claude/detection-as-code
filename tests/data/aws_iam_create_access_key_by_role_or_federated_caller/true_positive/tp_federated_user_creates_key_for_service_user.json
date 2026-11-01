@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic event; no real account, user, or incident.",
+    "description": "Lab federated session (GetFederationToken via 'lab-federation-broker') creates a key for service user 'lab-svc-backup'."
+  },
+  "event": {
+    "eventVersion": "1.09",
+    "userIdentity": {
+      "type": "FederatedUser",
+      "principalId": "123456789012:lab-contractor-session",
+      "arn": "arn:aws:sts::123456789012:federated-user/lab-contractor-session",
+      "accountId": "123456789012",
+      "accessKeyId": "ASIAEXAMPLESESSION02",
+      "sessionContext": {
+        "sessionIssuer": {
+          "type": "IAMUser",
+          "principalId": "AIDAEXAMPLEPRINCIPAL03",
+          "arn": "arn:aws:iam::123456789012:user/lab-federation-broker",
+          "accountId": "123456789012",
+          "userName": "lab-federation-broker"
+        },
+        "webIdFederationData": {},
+        "attributes": {
+          "creationDate": "2026-10-30T09:58:00Z",
+          "mfaAuthenticated": "false"
+        }
+      }
+    },
+    "eventTime": "2026-10-30T10:04:12Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "203.0.113.88",
+    "userAgent": "aws-cli/2.17.0 Python/3.11.9 Windows/10 exe/AMD64",
+    "requestParameters": {
+      "userName": "lab-svc-backup"
+    },
+    "responseElements": {
+      "accessKey": {
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "status": "Active",
+        "userName": "lab-svc-backup",
+        "createDate": "2026-10-30T10:04:12Z"
+      }
+    },
+    "requestID": "7c2e9d1a-3b4c-4d5e-8f60-000000000002",
+    "eventID": "c2f0d8e5-0000-4000-8000-000000000002",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management"
+  }
+}

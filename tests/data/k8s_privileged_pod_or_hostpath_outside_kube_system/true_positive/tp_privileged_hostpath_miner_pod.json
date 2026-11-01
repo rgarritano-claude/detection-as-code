@@ -1,0 +1,77 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Lab incident step: privileged pod with hostPath '/' (simulated cryptominer disguised as a metrics agent) created in lab-apps by the stolen service account."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "RequestResponse",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000007",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/lab-apps/pods",
+    "verb": "create",
+    "user": {
+      "username": "system:serviceaccount:lab-apps:lab-web-frontend",
+      "groups": [
+        "system:serviceaccounts",
+        "system:serviceaccounts:lab-apps",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "203.0.113.66"
+    ],
+    "userAgent": "curl/8.5.0",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "lab-apps"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 201
+    },
+    "requestReceivedTimestamp": "2026-10-14T02:24:57.731002Z",
+    "stageTimestamp": "2026-10-14T02:24:57.731002Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    },
+    "requestObject": {
+      "kind": "Pod",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "lab-metrics-agent",
+        "namespace": "lab-apps"
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "agent",
+            "image": "registry.example.net/lab/metrics-agent:1.0",
+            "securityContext": {
+              "privileged": true
+            },
+            "volumeMounts": [
+              {
+                "name": "host-root",
+                "mountPath": "/host"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "host-root",
+            "hostPath": {
+              "path": "/",
+              "type": "Directory"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+title: AWS IAM Access Key Created by an Assumed-Role or Federated Caller
+id: b420c517-9ca9-4f04-86e1-5136a63d75b4
+related:
+  - id: 43b4e28d-8295-4d85-922d-1def0a78ac82
+    type: similar
+status: experimental
+description: |
+  Detects a successful iam:CreateAccessKey call made by an assumed-role session
+  (userIdentity.type=AssumedRole, which includes IAM Identity Center/SSO sessions)
+  or a federated user (userIdentity.type=FederatedUser) for an IAM user.
+
+  Roles and federated sessions cannot own IAM access keys, so every successful
+  CreateAccessKey from these callers mints long-lived credentials for some IAM
+  user. An attacker holding temporary credentials (for example, a stolen role
+  session or a compromised CI/CD role) can use this to convert short-lived access
+  into durable access that outlives the session.
+
+  Companion to "AWS IAM Access Key Created for a Different User", which covers
+  IAM-user callers by comparing caller and target user names. Together the two
+  rules cover IAMUser, AssumedRole, and FederatedUser callers.
+
+  Scope note: Root-user callers (userIdentity.type=Root) are not covered here;
+  root activity is expected to be handled by a dedicated root-usage detection.
+references:
+  - https://attack.mitre.org/techniques/T1098/001/
+  - https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html
+  - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-user-identity.html
+  - https://docs.aws.amazon.com/STS/latest/APIReference/API_GetFederationToken.html
+author: Robert Garritano
+date: 2026-11-01
+tags:
+  - attack.persistence
+  - attack.privilege-escalation
+  - attack.t1098.001
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: CreateAccessKey
+    userIdentity.type:
+      - AssumedRole
+      - FederatedUser
+    requestParameters.userName|exists: true
+  filter_main_failed_call:
+    errorCode|exists: true
+  condition: selection and not filter_main_failed_call
+fields:
+  - eventTime
+  - userIdentity.type
+  - userIdentity.arn
+  - userIdentity.sessionContext.sessionIssuer.arn
+  - requestParameters.userName
+  - responseElements.accessKey.accessKeyId
+  - sourceIPAddress
+  - userAgent
+  - recipientAccountId
+falsepositives:
+  - Infrastructure-as-code or identity-automation roles that provision IAM users with keys
+    (after review, allowlist the role ARN in userIdentity.sessionContext.sessionIssuer.arn)
+  - Administrators using IAM Identity Center permission sets to issue keys for legacy integrations that cannot use roles
+  - Key rotation automation running under a role
+level: medium

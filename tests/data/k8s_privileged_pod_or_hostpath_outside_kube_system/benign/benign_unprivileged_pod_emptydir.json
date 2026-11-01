@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic Kubernetes audit event; no real cluster, user, or incident.",
+    "description": "Ordinary application pod with an emptyDir volume and privileged=false."
+  },
+  "event": {
+    "kind": "Event",
+    "apiVersion": "audit.k8s.io/v1",
+    "level": "RequestResponse",
+    "auditID": "5f3c9a1e-0000-4000-8000-000000000010",
+    "stage": "ResponseComplete",
+    "requestURI": "/api/v1/namespaces/lab-apps/pods",
+    "verb": "create",
+    "user": {
+      "username": "system:serviceaccount:kube-system:replicaset-controller",
+      "groups": [
+        "system:serviceaccounts",
+        "system:serviceaccounts:kube-system",
+        "system:authenticated"
+      ]
+    },
+    "sourceIPs": [
+      "192.0.2.10"
+    ],
+    "userAgent": "kube-controller-manager/v1.31.0 (linux/amd64) kubernetes/lab/system:serviceaccount:kube-system:replicaset-controller",
+    "objectRef": {
+      "resource": "pods",
+      "apiVersion": "v1",
+      "namespace": "lab-apps"
+    },
+    "responseStatus": {
+      "metadata": {},
+      "code": 201
+    },
+    "requestReceivedTimestamp": "2026-10-16T13:00:00.000000Z",
+    "stageTimestamp": "2026-10-16T13:00:00.000000Z",
+    "annotations": {
+      "authorization.k8s.io/decision": "allow",
+      "authorization.k8s.io/reason": ""
+    },
+    "requestObject": {
+      "kind": "Pod",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "lab-web-frontend-7d9f8-abcde",
+        "namespace": "lab-apps"
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "web",
+            "image": "registry.example.net/lab/web:3.2",
+            "securityContext": {
+              "privileged": false
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "cache",
+            "emptyDir": {}
+          }
+        ]
+      }
+    }
+  }
+}

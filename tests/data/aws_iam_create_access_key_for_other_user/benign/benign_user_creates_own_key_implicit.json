@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "LAB SIMULATION - synthetic event; no real account, user, or incident.",
+    "description": "User creates a key for themselves without specifying userName (self-service; requestParameters is null)."
+  },
+  "event": {
+    "eventVersion": "1.09",
+    "userIdentity": {
+      "type": "IAMUser",
+      "principalId": "AIDAEXAMPLEPRINCIPAL01",
+      "arn": "arn:aws:iam::123456789012:user/lab-dev-jsmith",
+      "accountId": "123456789012",
+      "accessKeyId": "AKIAEXAMPLECALLER001",
+      "userName": "lab-dev-jsmith"
+    },
+    "eventTime": "2026-10-28T15:02:11Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "203.0.113.45",
+    "userAgent": "aws-cli/2.17.0 Python/3.11.9 Linux/6.1 exe/x86_64",
+    "requestParameters": null,
+    "responseElements": {
+      "accessKey": {
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "status": "Active",
+        "userName": "lab-dev-jsmith",
+        "createDate": "Oct 28, 2026, 3:02:11 PM"
+      }
+    },
+    "requestID": "4b1f8c2e-1a2b-4c3d-9e8f-000000000002",
+    "eventID": "b2e0c7d4-0000-4000-8000-000000000002",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management"
+  }
+}

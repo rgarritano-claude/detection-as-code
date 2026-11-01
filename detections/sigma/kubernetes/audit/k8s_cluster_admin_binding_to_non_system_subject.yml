@@ -1,0 +1,67 @@
+title: Kubernetes ClusterRoleBinding Grants cluster-admin to a Non-System Subject
+id: aa889e2b-e17a-47b5-ab9a-a91edc732d20
+status: experimental
+description: |
+  Detects a successful create or update of a ClusterRoleBinding whose roleRef is
+  the built-in cluster-admin ClusterRole, bound to a subject that is not a
+  Kubernetes system identity. cluster-admin grants full control of every
+  resource in every namespace; binding it to a workload service account or an
+  ordinary user is a direct privilege-escalation and persistence step.
+
+  Logic: verb create/update on clusterrolebindings (rbac.authorization.k8s.io),
+  roleRef.name=cluster-admin, response code 200/201. Excluded: subjects whose
+  name starts with "system:" (built-in users/groups such as system:masters) and
+  service accounts in kube-system.
+
+  Requirements and gaps:
+  - The audit policy must log clusterrolebindings at Request or
+    RequestResponse level; at Metadata level requestObject is absent and the
+    rule cannot fire.
+  - Subjects are multivalued: a binding that lists a system subject alongside
+    a non-system subject is excluded (multivalue NOT semantics). Review such
+    bindings with a separate hunting query.
+  - patch requests carry a partial body and are not covered; namespaced
+    RoleBindings to cluster-admin are not covered.
+references:
+  - https://attack.mitre.org/techniques/T1098/006/
+  - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles
+  - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
+author: Robert Garritano
+date: 2026-11-01
+tags:
+  - attack.privilege-escalation
+  - attack.persistence
+  - attack.t1098.006
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb:
+      - create
+      - update
+    objectRef.resource: clusterrolebindings
+    objectRef.apiGroup: rbac.authorization.k8s.io
+    requestObject.roleRef.kind: ClusterRole
+    requestObject.roleRef.name: cluster-admin
+    responseStatus.code:
+      - 200
+      - 201
+  filter_main_system_subject:
+    requestObject.subjects.name|startswith: 'system:'
+  filter_main_kube_system_sa:
+    requestObject.subjects.namespace: kube-system
+  condition: selection and not 1 of filter_main_*
+fields:
+  - requestReceivedTimestamp
+  - user.username
+  - sourceIPs
+  - userAgent
+  - objectRef.name
+  - requestObject.subjects.kind
+  - requestObject.subjects.name
+  - requestObject.subjects.namespace
+falsepositives:
+  - Cluster bootstrap or platform tooling (e.g. installers, GitOps controllers) that binds cluster-admin to its own operator account
+  - Break-glass administrator bindings created under change control
+level: high

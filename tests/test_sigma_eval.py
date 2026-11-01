@@ -49,3 +49,24 @@ def test_regex():
     r = _rule("  sel:\n    a|re: '^ab\\.c$'\n  condition: sel\n")
     assert rule_matches(r, {"a": "ab.c"})
     assert not rule_matches(r, {"a": "abxc"})
+
+
+def test_list_traversal_any_semantics():
+    r = _rule("  sel:\n    subjects.name|startswith: 'system:'\n  condition: sel\n")
+    assert rule_matches(r, {"subjects": [{"name": "lab-user"}, {"name": "system:masters"}]})
+    assert not rule_matches(r, {"subjects": [{"name": "lab-user"}]})
+
+
+def test_list_traversal_exists_and_bool():
+    r = _rule("  sel:\n    spec.containers.securityContext.privileged: true\n"
+              "  hp:\n    spec.volumes.hostPath.path|exists: true\n  condition: sel or hp\n")
+    assert rule_matches(r, {"spec": {"containers": [{"name": "a"}, {"securityContext": {"privileged": True}}]}})
+    assert rule_matches(r, {"spec": {"volumes": [{"emptyDir": {}}, {"hostPath": {"path": "/"}}]}})
+    assert not rule_matches(r, {"spec": {"containers": [{"securityContext": {"privileged": False}}],
+                                         "volumes": [{"emptyDir": {}}]}})
+
+
+def test_numbers():
+    r = _rule("  sel:\n    code:\n      - 200\n      - 201\n  condition: sel\n")
+    assert rule_matches(r, {"code": 201})
+    assert not rule_matches(r, {"code": 403})

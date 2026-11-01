@@ -72,7 +72,8 @@ def test_converts_to_spl(rule_path: Path):
     spl = convert_rule(rule_path)
     query_lines = [ln for ln in spl.splitlines() if ln and not ln.startswith("```")]
     assert query_lines, "conversion produced an empty query"
-    assert 'sourcetype="aws:cloudtrail"' in spl or "aws" not in rule_path.parts
+    # Every log source must have a pipeline in scripts/pipelines/ that scopes it.
+    assert "sourcetype=" in spl, "no sourcetype scoping; add a pipeline for this logsource"
 
 
 def test_committed_spl_is_current(rule_path: Path):

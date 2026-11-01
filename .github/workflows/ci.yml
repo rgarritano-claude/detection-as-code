@@ -38,5 +38,5 @@ jobs:
       - name: Sigma -> SPL conversion (fails on drift)
         run: make convert-check PYTHON=python
 
-      - name: pytest
+      - name: pytest (detections + SOAR playbooks)
         run: make test PYTHON=python
